@@ -4,13 +4,16 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./out-tsc/spec",
-    "types": [
-      "jasmine"
-    ]
+    "types": ["jasmine"]
   },
+  "files": [
+    "common/src/main.ts"
+    // 他のエントリポイントがあればここに追加
+  ],
   "include": [
     "common/src/**/*.spec.ts",
     "common/src/**/*.d.ts",
-    "my-component/**/*.spec.ts"
+    "my-component/**/*.spec.ts",
+    "my-component/**/*.d.ts" // 必要に応じて追加
   ]
 }
