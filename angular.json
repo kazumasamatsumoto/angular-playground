@@ -7,15 +7,15 @@
       "projectType": "application",
       "schematics": {},
       "root": "",
-      "sourceRoot": "src",
+      "sourceRoot": "common/src",
       "prefix": "app",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
             "outputPath": "dist/angular-frontend",
-            "index": "src/index.html",
-            "browser": "src/main.ts",
+            "index": "common/src/index.html",
+            "browser": "common/src/main.ts",
             "polyfills": [
               "zone.js"
             ],
@@ -27,7 +27,7 @@
               }
             ],
             "styles": [
-              "src/styles.css"
+              "common/src/styles.css"
             ],
             "scripts": []
           },
@@ -85,7 +85,7 @@
               }
             ],
             "styles": [
-              "src/styles.css"
+              "common/src/styles.css"
             ],
             "scripts": []
           }
@@ -95,28 +95,28 @@
     "common": {
       "projectType": "application",
       "schematics": {},
-      "root": "projects/common",
-      "sourceRoot": "projects/common/src",
+      "root": "common",
+      "sourceRoot": "common/src",
       "prefix": "app",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
             "outputPath": "dist/common",
-            "index": "projects/common/src/index.html",
-            "browser": "projects/common/src/main.ts",
+            "index": "common/src/index.html",
+            "browser": "common/src/main.ts",
             "polyfills": [
               "zone.js"
             ],
-            "tsConfig": "projects/common/tsconfig.app.json",
+            "tsConfig": "common/tsconfig.app.json",
             "assets": [
               {
                 "glob": "**/*",
-                "input": "projects/common/public"
+                "input": "common/public"
               }
             ],
             "styles": [
-              "projects/common/src/styles.css"
+              "common/src/styles.css"
             ],
             "scripts": []
           },
@@ -166,15 +166,15 @@
               "zone.js",
               "zone.js/testing"
             ],
-            "tsConfig": "projects/common/tsconfig.spec.json",
+            "tsConfig": "common/tsconfig.spec.json",
             "assets": [
               {
                 "glob": "**/*",
-                "input": "projects/common/public"
+                "input": "common/public"
               }
             ],
             "styles": [
-              "projects/common/src/styles.css"
+              "common/src/styles.css"
             ],
             "scripts": []
           }
