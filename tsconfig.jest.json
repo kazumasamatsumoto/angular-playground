@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./out-tsc/jest",
+    "types": ["jest", "node"],
+    "esModuleInterop": true
+  },
+  "include": [
+    "common/src/**/*.test.ts",
+    "common/src/**/*.d.ts",
+    "my-component/**/*.test.ts",
+    "my-component/**/*.d.ts"
+  ]
+}
