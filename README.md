@@ -146,3 +146,128 @@ src/
 claude に内容を公開している
 
 https://claude.ai/share/efae6254-3d4a-48d6-9049-6ba548f6b886
+
+## Karma+JasmineとJestの共存環境
+
+このプロジェクトでは、Karma+JasmineとJestの両方のテスト環境を共存させています。両方のテストフレームワークを使用することで、それぞれの利点を活かしたテスト戦略を実現できます。
+
+### 実装内容
+
+1. **基本設定**
+   - Jestとその関連パッケージ（jest、@types/jest、jest-preset-angular、ts-jest）をインストール
+   - Jest設定ファイル（jest.config.js、setup-jest.ts、tsconfig.jest.json）を作成
+   - package.jsonにテスト実行スクリプトを追加
+
+2. **テストの切り分け方法**
+   - Karma+Jasmine用: `*.spec.ts` ファイル
+   - Jest用: `*.test.ts` ファイル
+   - このファイル命名規則により、テストランナーはそれぞれのテストを自動的に認識
+
+3. **実行スクリプト**
+   ```bash
+   # Jestのみ実行（ユニットテスト）
+   npm run test:unit
+   
+   # Jestのウォッチモードで実行
+   npm run test:unit:watch
+   
+   # Karmaのみ実行（ブラウザテスト）
+   npm run test:browser
+   
+   # 両方の環境でテスト実行
+   npm run test:all
+   ```
+
+4. **テスト環境の使い分け**
+   - Jest: サービス、パイプ、ディレクティブ、コンポーネントのビジネスロジックなどのユニットテスト
+   - Karma+Jasmine: DOMイベント、レンダリング、アニメーション関連、実ブラウザでの振る舞いなどの統合テスト
+
+5. **共通ユーティリティ**
+   - `common/src/testing/test-utils.ts`に両方の環境で使える共通関数を実装
+
+### テストガイドライン
+
+詳細なテストガイドラインは`testing-guidelines.md`に記載されており、テストの書き方、環境の使い分け、ベストプラクティスなどが説明されています。このガイドラインに従うことで、効率的かつ一貫性のあるテスト実装が可能になります。
+
+### 主要ファイル
+
+- **設定ファイル**: 
+  - Jest: `jest.config.js`, `setup-jest.ts`, `tsconfig.jest.json`
+  - Karma: `karma.conf.js` (Angular CLIが内部で使用), `tsconfig.spec.json`
+- **テストファイル**: `*.spec.ts` (Karma), `*.test.ts` (Jest)
+- **共通ユーティリティ**: `common/src/testing/test-utils.ts`
+
+この構成により、Jest環境の高速なユニットテストとKarma+Jasmine環境の実ブラウザテストの両方のメリットを活用できます。
+
+### 重要な設定項目
+
+#### 1. Jest設定ファイル (jest.config.js)
+```javascript
+module.exports = {
+  preset: 'jest-preset-angular',  // Angular用のJestプリセットを使用
+  setupFilesAfterEnv: ['<rootDir>/setup-jest.ts'],  // テスト環境のセットアップファイル
+  transform: {
+    '^.+\\.(ts|js|mjs|html|svg)$': [  // トランスフォーム設定
+      'jest-preset-angular',
+      {
+        tsconfig: '<rootDir>/tsconfig.jest.json',  // Jest用のTS設定
+        stringifyContentPathRegex: '\\.(html|svg)$',
+      },
+    ],
+  },
+  testPathIgnorePatterns: [  // 対象外ディレクトリ
+    '<rootDir>/node_modules/',
+    '<rootDir>/dist/'
+  ],
+  testMatch: [
+    '**/*.test.ts'  // *.test.tsファイルのみを対象にする
+  ],
+  moduleNameMapper: {  // モジュールエイリアス
+    '@app/(.*)': '<rootDir>/common/src/app/$1',
+    '@common/(.*)': '<rootDir>/common/src/$1'
+  },
+  collectCoverage: true,  // カバレッジレポート設定
+  coverageReporters: ['html', 'text-summary']
+}
+```
+
+#### 2. setup-jest.ts
+このファイルはJestテスト実行前の環境設定を行います。主な役割は：
+- Angularテスト環境のセットアップ
+- DOMとブラウザ環境のモック設定
+
+#### 3. tsconfig.jest.json
+```javascript
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./out-tsc/jest",
+    "types": ["jest", "node"],  // Jestとnodeの型定義を追加
+    "esModuleInterop": true     // ESモジュール相互運用性の有効化
+  },
+  "include": [  // Jestテストファイルの指定
+    "common/src/**/*.test.ts",
+    "common/src/**/*.d.ts",
+    "my-component/**/*.test.ts",
+    "my-component/**/*.d.ts"
+  ]
+}
+```
+
+#### 4. package.json スクリプト
+```json
+"scripts": {
+  "test": "ng test",              // 既存のKarmaテスト
+  "test:unit": "jest",            // Jestテスト
+  "test:unit:watch": "jest --watch", // Jestウォッチモード
+  "test:browser": "ng test",      // Karmaテスト (明示的に命名)
+  "test:all": "npm run test:unit && npm run test:browser" // 両方実行
+}
+```
+
+#### 5. ファイル命名規則
+テスト環境の分離は主にファイル名の拡張子により実現しています：
+- `*.spec.ts`: Karma+Jasmineテスト
+- `*.test.ts`: Jestテスト
+
+各テストランナーは設定ファイル内の`testMatch`パターンに基づいてテストファイルを選択します。この命名規則を守ることで、同じコンポーネントやサービスに対して両方の環境でテストを書くことが可能になります。
