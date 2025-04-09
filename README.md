@@ -147,7 +147,9 @@ claude に内容を公開している
 
 https://claude.ai/share/efae6254-3d4a-48d6-9049-6ba548f6b886
 
-## Karma+JasmineとJestの共存環境
+## テスト環境
+
+### Karma+JasmineとJestの共存環境
 
 このプロジェクトでは、Karma+JasmineとJestの両方のテスト環境を共存させています。両方のテストフレームワークを使用することで、それぞれの利点を活かしたテスト戦略を実現できます。
 
@@ -271,3 +273,61 @@ module.exports = {
 - `*.test.ts`: Jestテスト
 
 各テストランナーは設定ファイル内の`testMatch`パターンに基づいてテストファイルを選択します。この命名規則を守ることで、同じコンポーネントやサービスに対して両方の環境でテストを書くことが可能になります。
+
+### PlaywrightによるE2Eテスト環境
+
+このプロジェクトにはPlaywrightを使用したE2E（エンドツーエンド）テスト環境も導入されています。Playwrightは、Chromium、Firefox、WebKitの3つのブラウザでテストを自動的に実行できるモダンなテストフレームワークです。
+
+#### 導入内容
+
+1. **基本設定**
+   - Playwrightパッケージとブラウザドライバーのインストール
+   - 設定ファイル（`playwright.config.ts`）の作成と構成
+   - テスト実行用のスクリプトを`package.json`に追加
+
+2. **テストファイル構成**
+   - 基本的なテスト: `e2e-tests/example.spec.ts`
+   - 高度なテスト: `e2e-tests/advanced.spec.ts`
+   - ページオブジェクトモデル（POM）: `e2e-tests/page-objects/home.page.ts`
+
+3. **テスト機能**
+   - 基本的なページ構造テスト
+   - タイトルと要素の検証
+   - スクリーンショットテスト
+   - ページオブジェクトモデルパターンの実装
+
+4. **ドキュメント**
+   - テスト実行方法と作成ガイドライン: `e2e-testing.md`
+
+#### テスト実行方法
+
+```bash
+# すべてのテストを実行
+npm run test:e2e
+
+# 特定のブラウザでのみテスト実行
+npm run test:e2e -- --project=chromium
+npm run test:e2e -- --project=firefox
+npm run test:e2e -- --project=webkit
+
+# UIモードでテストを実行（視覚的テスト環境）
+npm run test:e2e:ui
+
+# デバッグモードでテスト実行
+npm run test:e2e:debug
+```
+
+#### 主要ファイル
+
+- **設定ファイル**: `playwright.config.ts`
+- **テストファイル**: `e2e-tests/*.spec.ts`
+- **ページオブジェクト**: `e2e-tests/page-objects/*.page.ts`
+- **ドキュメント**: `e2e-testing.md`
+
+#### 特徴
+
+- Angularアプリケーションの自動テスト
+- 複数ブラウザでの同時テスト
+- ページオブジェクトモデルによる保守性の高いテスト設計
+- スクリーンショットテストによるビジュアルリグレッションテスト
+- 詳細なテストレポート生成
