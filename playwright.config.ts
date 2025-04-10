@@ -41,6 +41,17 @@ export default defineConfig({
       name: 'webkit',
       use: { ...devices['Desktop Safari'] },
     },
+    // Edgeテストは一時的にchromiumを使用してエミュレート
+    {
+      name: 'edge',
+      use: { 
+        browserName: 'chromium',
+        userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36 Edg/91.0.864.59',
+        viewport: { width: 1280, height: 720 },
+        ignoreHTTPSErrors: true,
+        acceptDownloads: true,
+      },
+    },
   ],
 
   /* ローカル開発サーバーの設定 */
@@ -48,5 +59,6 @@ export default defineConfig({
     command: 'npm run start',
     port: 4200,
     reuseExistingServer: !process.env['CI'],
+    timeout: 120000, // タイムアウトを2分に延長
   },
 });
